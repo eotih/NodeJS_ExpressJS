@@ -1,4 +1,4 @@
-<div class="mt-4">
+<form name="container-form" method="POST" action="/courses/handle-form-action" class="mt-4">
     <div>
         <h3>Nhạc của tôi</h3>
         {{!-- {{#if deletedCount}} --}}
@@ -12,12 +12,12 @@
                     Chọn tất cả
                 </label>
             </div>
-            <select class="form-select form-select-sm checkbox-select-all-options" id=""
+            <select class="form-select form-select-sm checkbox-select-all-options" name="action" required
                 aria-label="Default select example">
-                <option>-- Hành động --</option>
+                <option value="">-- Hành động --</option>
                 <option value="delete">Xóa</option>
             </select>
-            <button class="btn btn-primary btn-sm disabled">
+            <button id="removeClass" class="btn btn-primary btn-sm btn-check-all-submit disabled">
                 Thực hiện
             </button>
         </div>
@@ -62,7 +62,7 @@
             {{/each}}
         </tbody>
     </table>
-</div>
+</form>
 
 {{!-- Confirm xóa khóa học --}}
 <div id="delete-music-modal" class="modal" tabindex="-1">
@@ -89,20 +89,25 @@
     document.addEventListener(`DOMContentLoaded`, function () {
         var courseId;
         var deleteForm = document.forms['delete-music-form'];
+        var containerForm = document.forms['container-form'];
         var btnDeleteMusic = document.getElementById('btn-delete-music');
         var checkboxAll = document.getElementById('checkbox-all')
+        var xoaClass = document.getElementById('removeClass')
         //var musicItemCheckbox = document.getElementById('courseIds[]') // hàm này để dùng addlistener
         var musicItemCheckboxName = document.getElementsByName('courseIds[]')
+        var checkAllSubmit = document.getElementsByClassName('btn-check-all-submit')
 
         // Checkbox all changed
         checkboxAll.addEventListener('change', function (e) {
             if (this.checked) {
                 for (i = 0; i < musicItemCheckboxName.length; i++) {
                     musicItemCheckboxName[i].checked = true;
+                    xoaClass.classList.remove("disabled")
                 }
             } else {
                 for (i = 0; i < musicItemCheckboxName.length; i++) {
                     musicItemCheckboxName[i].checked = false;
+                    xoaClass.classList.add("disabled")
                 }
             }
         })
@@ -126,6 +131,42 @@
             deleteForm.action = '/courses/' + courseId + '?_method=DELETE'
             deleteForm.submit();
         }
+        // Click nút thực hiện
+        xoaClass.addEventListener('click', function (e) {
+            e.preventDefault();
+            containerForm.submit();
+        })
+        
+        //Render lại cái nút button thực hiện
+        function renderCheckAllSubmitBtn() {
+            var checkedCount = 0;
+            for (i = 0; i < musicItemCheckboxName.length; i++) {
+                let a = i
+                musicItemCheckboxName[i].addEventListener('change', function (e) {
+                    if (musicItemCheckboxName[a].checked) {
+                        checkedCount++
+                        if (checkedCount > 0) {
+                            xoaClass.classList.remove("disabled")
+                        } else {
+
+                            xoaClass.classList.add("disabled")
+                        }
+                    } else {
+                        checkedCount--
+                        if (checkedCount > 0) {
+                            xoaClass.classList.remove("disabled")
+                        } else {
+
+                            xoaClass.classList.add("disabled")
+                        }
+                    }
+
+                })
+
+
+            }
+        }
+        renderCheckAllSubmitBtn()
     })
 
 </script>
