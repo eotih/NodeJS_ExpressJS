@@ -1,0 +1,72 @@
+<div class="mt-4">
+    <h3>Nhạc của tôi</h3>
+    <table class="table mt-4">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Tên nhạc</th>
+                <th scope="col">Level</th>
+                <th scope="col">Thời gian tạo</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each courses}}
+            <tr>
+                <th scope="row">{{sum @index 1}}</th>
+                <td>{{this.name}}</td>
+                <td>{{this.level}}</td>
+                <td>{{this.createdAt}}</td>
+                <td>
+                    <a href="/courses/{{this._id}}/edit" class="btn btn-link">Sửa</button>
+                        <a href="" class="btn btn-link" data-id="{{this._id}}" data-bs-toggle="modal"
+                            data-bs-target="#delete-music-modal">Xóa</button>
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+
+{{!-- Confirm xóa khóa học --}}
+<div id="delete-music-modal" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Xóa nhạc ?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn chắc chắn muốn xóa nhạc này?</p>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-delete-music" type="button" class="btn btn-danger">Xóa bỏ</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+            </div>
+        </div>
+    </div>
+</div>
+{{!-- Delete hidden form --}}
+<form method="POST" name="delete-music-form"></form>
+
+<script>
+    document.addEventListener(`DOMContentLoaded`, function () {
+        var courseId;
+        var deleteForm = document.forms['delete-music-form'];
+        var btnDeleteMusic = document.getElementById('btn-delete-music');
+        
+        // Khi mà dialog confirm đã được click
+        var exampleModal = document.getElementById('delete-music-modal')
+        exampleModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+            courseId = button.getAttribute('data-id')
+        })
+        // Khi mà button delete đã được click
+        var btnDeleteMusic = document.getElementById('btn-delete-music')
+        btnDeleteMusic.onclick = function () {
+            deleteForm.action = '/courses/' + courseId + '?_method=DELETE'
+            deleteForm.submit();
+        }
+    })
+
+</script>
