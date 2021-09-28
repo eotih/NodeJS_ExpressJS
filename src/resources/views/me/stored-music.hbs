@@ -93,7 +93,6 @@
         var btnDeleteMusic = document.getElementById('btn-delete-music');
         var checkboxAll = document.getElementById('checkbox-all')
         var xoaClass = document.getElementById('removeClass')
-        //var musicItemCheckbox = document.getElementById('courseIds[]') // hàm này để dùng addlistener
         var musicItemCheckboxName = document.getElementsByName('courseIds[]')
         var checkAllSubmit = document.getElementsByClassName('btn-check-all-submit')
 
@@ -136,7 +135,7 @@
             e.preventDefault();
             containerForm.submit();
         })
-        
+
         //Render lại cái nút button thực hiện
         function renderCheckAllSubmitBtn() {
             var checkedCount = 0;
