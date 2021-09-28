@@ -5,6 +5,7 @@ const methodOverride = require('method-override');
 const handlebars = require('express-handlebars');
 const route = require('./routes');
 const db = require('./config/db');
+const SortMiddleWare = require('./app/middlewares/SortMiddleWare')
 
 
 // Connect to db
@@ -25,18 +26,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({
     extended: true
 }))
+//Custom middleware
+app.use(SortMiddleWare)
 app.use(express.json()) // gửi từ code javascript
 
-// Xác nhận quyền truy cập - Authentication
-app.use(bacBaoVe)
+// // Xác nhận quyền truy cập - Authentication
+// app.use(bacBaoVe)
 
-// Authentication 
-function bacBaoVe(req, res, next) {
-    if (['vethuong', 'vevip'].includes(req.query.ve)) {
-        req.face = 'gach gach gach!!!'
-        return next();
-    } res.status(403).json({ message: 'Access Denied' })
-}
+// // Authentication 
+// function bacBaoVe(req, res, next) {
+//     if (['vethuong', 'vevip'].includes(req.query.ve)) {
+//         req.face = 'gach gach gach!!!'
+//         return next();
+//     } res.status(403).json({ message: 'Access Denied' })
+// }
 
 //HTTP logger
 // app.use(morgan('combined'))
@@ -46,6 +49,24 @@ app.engine('hbs', handlebars({
     extname: ".hbs",
     helpers: {
         sum: (a, b) => a + b,
+        sortable: (field, sort) => {
+            const sortType = field === sort.column ? sort.type : 'default'
+            const icons = {
+                default: 'fas fa-sort',
+                asc: 'fas fa-sort-amount-down-alt',
+                desc: 'fas fa-sort-amount-down',
+            };
+            const type = {
+                default: 'desc',
+                asc: 'desc',
+                desc: 'asc',
+            }
+            const icon = icons[sortType]
+            const type = types[sortType]
+            return `<a href="?_sort&column=${field}&type=${type}">
+            <i class="${type}"></i>
+        </a>`;
+        }
     }
 }));
 

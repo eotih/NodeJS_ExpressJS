@@ -27,9 +27,15 @@
         <thead>
             <tr>
                 <th scope="col" colspan="2">#</th>
-                <th scope="col">Tên nhạc</th>
-                <th scope="col">Level</th>
-                <th scope="col">Thời gian tạo</th>
+                <th scope="col">Tên nhạc
+                    {{{sortable 'name' _sort}}}
+                    </th>
+                <th scope="col">Level
+                     {{{sortable 'level' _sort}}}
+                </th>
+                <th scope="col">Thời gian tạo
+                     {{{sortable 'createdAt' _sort}}}
+                </th>
                 <th scope="col"></th>
             </tr>
         </thead>
