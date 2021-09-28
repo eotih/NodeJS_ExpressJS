@@ -13,6 +13,9 @@ db.connect();
 const app = express();
 const port = 3000;
 
+
+
+
 // Cấp quyền cho phép sử dụng PUT DELETE
 app.use(methodOverride('_method'))
 
@@ -23,6 +26,17 @@ app.use(express.urlencoded({
     extended: true
 }))
 app.use(express.json()) // gửi từ code javascript
+
+// Xác nhận quyền truy cập - Authentication
+app.use(bacBaoVe)
+
+// Authentication 
+function bacBaoVe(req, res, next) {
+    if (['vethuong', 'vevip'].includes(req.query.ve)) {
+        req.face = 'gach gach gach!!!'
+        return next();
+    } res.status(403).json({ message: 'Access Denied' })
+}
 
 //HTTP logger
 // app.use(morgan('combined'))
