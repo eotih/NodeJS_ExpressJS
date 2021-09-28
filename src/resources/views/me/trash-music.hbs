@@ -1,8 +1,8 @@
 <div class="mt-4">
-    <h3>Nhạc của tôi</h3>
-    <a href="/me/trash/music">
-        Thùng rác
+    <a href="/me/stored/music">
+        Danh sách khóa học
     </a>
+    <h3>Khóa học đã xóa</h3>
     <table class="table mt-4">
         <thead>
             <tr>
@@ -21,16 +21,16 @@
                 <td>{{this.level}}</td>
                 <td>{{this.createdAt}}</td>
                 <td>
-                    <a href="/courses/{{this._id}}/edit" class="btn btn-link">Sửa</button>
+                    <a href="" data-id="{{this._id}}" class="btn btn-link btn-restore">Khôi phục</button>
                         <a href="" class="btn btn-link" data-id="{{this._id}}" data-bs-toggle="modal"
-                            data-bs-target="#delete-music-modal">Xóa</button>
+                            data-bs-target="#delete-music-modal">Xóa vĩnh viễn</button>
                 </td>
             </tr>
 
             {{else}}
             <tr>
-                <td colspan="5" class="text-center">Bạn chưa đăng nhạc nào.
-                <a href="/courses/create"> Đăng khóa học</a>
+                <td colspan="5" class="text-center">Thùng rác trống.
+                    <a href="/me/stored/music"> Danh sách nhạc</a>
                 </td>
             </tr>
             {{/each}}
@@ -47,7 +47,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Bạn chắc chắn muốn xóa nhạc này?</p>
+                <p>Hành động này không thể khôi phục. Bạn vẫn muốn muốn xóa nhạc này?</p>
             </div>
             <div class="modal-footer">
                 <button id="btn-delete-music" type="button" class="btn btn-danger">Xóa bỏ</button>
@@ -58,25 +58,40 @@
 </div>
 {{!-- Delete hidden form --}}
 <form method="POST" name="delete-music-form"></form>
+<form method="POST" name="restore-music-form"></form>
 
 <script>
     document.addEventListener(`DOMContentLoaded`, function () {
         var courseId;
         var deleteForm = document.forms['delete-music-form'];
+        var restoreForm = document.forms['restore-music-form'];
         var btnDeleteMusic = document.getElementById('btn-delete-music');
+        var restoreBtnAll = document.querySelectorAll('.btn-restore');
+        var exampleModal = document.getElementById('delete-music-modal')
+        var btnDeleteMusic = document.getElementById('btn-delete-music')
+
 
         // Khi mà dialog confirm đã được click
-        var exampleModal = document.getElementById('delete-music-modal')
         exampleModal.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget
             courseId = button.getAttribute('data-id')
         })
+
         // Khi mà button delete đã được click
-        var btnDeleteMusic = document.getElementById('btn-delete-music')
         btnDeleteMusic.onclick = function () {
-            deleteForm.action = '/courses/' + courseId + '?_method=DELETE'
+            deleteForm.action = '/courses/' + courseId + '/force?_method=DELETE'
             deleteForm.submit();
         }
+
+        restoreBtnAll.forEach((restoreBtn) => {
+            restoreBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                debugger;
+                var courseId = restoreBtn.getAttribute('data-id');
+                restoreForm.action = '/courses/' + courseId + '/restore?_method=PATCH';
+                restoreForm.submit();
+            });
+        });
     })
 
 </script>
